@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Map for the Board</title>
+    <style>
+      #map {
+        height: 99vh;
+        width: 99vw;
+      }
+    </style>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDevcjktLgU2INbF-3Zql4qqFiQNrQMcX0&callback=initMap"
+      async
+      defer
+    ></script>
+    <script>
+      let map;
+
+      function getMarkerIcon(boardType) {
+        const icons = {
+          tension: "icons/tension_crop.png",
+          moon: "icons/moon_crop.png",
+          kilter: "icons/kilter_crop.png",
+          grasshopper: "icons/grasshopper_crop.png",
+          touchstone: "icons/touchstone_crop.png",
+          decoy: "icons/decoy_crop.png",
+          // Add paths for other board types as needed
+        };
+        return {
+          url: icons[boardType] || "icons/default_icon.png", // Default icon if board type not found
+          scaledSize: new google.maps.Size(25, 25), // Adjust size as needed
+        };
+      }
+
+      async function initMap() {
+        // Map center location
+        const center = { lat: 36.153, lng: -115.152 };
+
+        // Initialize map
+        map = new google.maps.Map(document.getElementById("map"), {
+          center: center,
+          zoom: 8,
+          mapId: "93de5b634874a879",
+        });
+
+        // Replace 'path_to_geojson_file.geojson' with your file path
+        fetch("combined_geojson.json")
+          .then((response) => response.json())
+          .then((data) => {
+            // Load and add markers from GeoJSON
+            data.features.forEach((feature) => {
+              const marker = new google.maps.Marker({
+                position: {
+                  lat: feature.geometry.coordinates[1],
+                  lng: feature.geometry.coordinates[0],
+                },
+                map: map,
+                title:
+                  feature.properties.name + " - " + feature.properties.board,
+                icon: getMarkerIcon(feature.properties.board),
+              });
+
+              const infowindow = new google.maps.InfoWindow({
+                content:
+                  feature.properties.name + " - " + feature.properties.board,
+              });
+
+              marker.addListener("click", function () {
+                infowindow.open(map, marker);
+              });
+            });
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+    </script>
+  </head>
+  <body>
+    <div id="map"></div>
+  </body>
+</html>
