@@ -3,9 +3,9 @@
   <head>
     <title>Map for the Board</title>
     <link
-    rel="icon"
-    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📍</text></svg>"
-  />
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📍</text></svg>"
+    />
     <style>
       #map {
         height: 99vh;
@@ -13,12 +13,13 @@
       }
     </style>
   </head>
-  <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDevcjktLgU2INbF-3Zql4qqFiQNrQMcX0&callback=initMap"
-    async
-    defer
-  ></script>
+  <script id="googleMapsScript" async defer></script>
   <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var script = document.getElementById("googleMapsScript");
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API_KEY}&callback=initMap`;
+    });
+
     let map;
 
     function getMarkerIcon(boardType) {
