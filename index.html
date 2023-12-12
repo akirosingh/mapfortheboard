@@ -2,83 +2,81 @@
 <html>
   <head>
     <title>Map for the Board</title>
-    <svg xmlns="http://www.w3.org/2000/svg">
-      <text y="32" font-size="32">📍</text>
-    </svg>
-    <link rel="icon" href="/favicon.svg" />
-    <title>Map for the Board</title>
+    <link
+    rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📍</text></svg>"
+  />
     <style>
       #map {
         height: 99vh;
         width: 99vw;
       }
     </style>
-      </head>
-    <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDevcjktLgU2INbF-3Zql4qqFiQNrQMcX0&callback=initMap"
-      async
-      defer
-    ></script>
-    <script>
-      let map;
+  </head>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDevcjktLgU2INbF-3Zql4qqFiQNrQMcX0&callback=initMap"
+    async
+    defer
+  ></script>
+  <script>
+    let map;
 
-      function getMarkerIcon(boardType) {
-        const icons = {
-          tension: "icons/tension_crop.png",
-          moon: "icons/moon_crop.png",
-          kilter: "icons/kilter_crop.png",
-          grasshopper: "icons/grasshopper_crop.png",
-          touchstone: "icons/touchstone_crop.png",
-          decoy: "icons/decoy_crop.png",
-          // Add paths for other board types as needed
-        };
-        return {
-          url: icons[boardType] || "icons/default_icon.png", // Default icon if board type not found
-          scaledSize: new google.maps.Size(30, 30), // Adjust size as needed
-        };
-      }
+    function getMarkerIcon(boardType) {
+      const icons = {
+        tension: "icons/tension_crop.png",
+        moon: "icons/moon_crop.png",
+        kilter: "icons/kilter_crop.png",
+        grasshopper: "icons/grasshopper_crop.png",
+        touchstone: "icons/touchstone_crop.png",
+        decoy: "icons/decoy_crop.png",
+        // Add paths for other board types as needed
+      };
+      return {
+        url: icons[boardType] || "icons/default_icon.png", // Default icon if board type not found
+        scaledSize: new google.maps.Size(30, 30), // Adjust size as needed
+      };
+    }
 
-      async function initMap() {
-        // Map center location
-        const center = { lat: 37.0902, lng: -95.71290 };
+    async function initMap() {
+      // Map center location
+      const center = { lat: 37.0902, lng: -95.7129 };
 
-        // Initialize map
-        map = new google.maps.Map(document.getElementById("map"), {
-          center: center,
-          zoom: 5,
-          mapId: "93de5b634874a879",
-        });
+      // Initialize map
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: center,
+        zoom: 5,
+        mapId: "93de5b634874a879",
+      });
 
-        // Replace 'path_to_geojson_file.geojson' with your file path
-        fetch("combined_geojson.json")
-          .then((response) => response.json())
-          .then((data) => {
-            // Load and add markers from GeoJSON
-            data.features.forEach((feature) => {
-              const marker = new google.maps.Marker({
-                position: {
-                  lat: feature.geometry.coordinates[1],
-                  lng: feature.geometry.coordinates[0],
-                },
-                map: map,
-                title:
-                  feature.properties.name + " - " + feature.properties.board,
-                icon: getMarkerIcon(feature.properties.board),
-              });
-
-              const infowindow = new google.maps.InfoWindow({
-                content:
-                  feature.properties.name + " - " + feature.properties.board,
-              });
-
-              marker.addListener("click", function () {
-                infowindow.open(map, marker);
-              });
+      // Replace 'path_to_geojson_file.geojson' with your file path
+      fetch("combined_geojson.json")
+        .then((response) => response.json())
+        .then((data) => {
+          // Load and add markers from GeoJSON
+          data.features.forEach((feature) => {
+            const marker = new google.maps.Marker({
+              position: {
+                lat: feature.geometry.coordinates[1],
+                lng: feature.geometry.coordinates[0],
+              },
+              map: map,
+              title: feature.properties.name + " - " + feature.properties.board,
+              icon: getMarkerIcon(feature.properties.board),
             });
-          })
-          .catch((error) => console.error("Error:", error));
-      }
-    </script>
+
+            const infowindow = new google.maps.InfoWindow({
+              content:
+                feature.properties.name + " - " + feature.properties.board,
+            });
+
+            marker.addListener("click", function () {
+              infowindow.open(map, marker);
+            });
+          });
+        })
+        .catch((error) => console.error("Error:", error));
+    }
+  </script>
   <body>
     <div id="map"></div>
   </body>
