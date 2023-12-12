@@ -13,13 +13,8 @@
       }
     </style>
   </head>
-  <script id="googleMapsScript" async defer></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_PLACEHOLDER&callback=initMap" async defer></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      var script = document.getElementById("googleMapsScript");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API_KEY}&callback=initMap`;
-    });
-
     let map;
 
     function getMarkerIcon(boardType) {
